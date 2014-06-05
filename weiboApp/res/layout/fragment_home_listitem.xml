@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_tacos"
+    android:paddingBottom="8dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:paddingTop="8dp" >
+
+    <ImageView
+        android:id="@+id/home_avatar"
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
+
+    <TextView
+        android:id="@+id/home_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3dp"
+        android:layout_toRightOf="@id/home_avatar"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/home_sendfrom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/home_avatar"
+        android:layout_marginLeft="3dp"
+        android:layout_toRightOf="@id/home_avatar" />
+
+    <TextView
+        android:id="@+id/home_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/home_avatar"
+        android:layout_marginBottom="3dp"
+        android:layout_marginTop="3dp" />
+
+    <ImageView
+        android:id="@+id/home_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/home_content"
+        android:visibility="gone" />
+
+</RelativeLayout>
