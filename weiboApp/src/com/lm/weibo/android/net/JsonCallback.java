@@ -14,7 +14,7 @@ import org.json.JSONTokener;
 
 import com.lm.weibo.android.utils.IOUtil;
 import com.lm.weibo.android.utils.JsonParser;
-import com.lm.weibo.android.utils.TextUtil;
+import com.lm.weibo.android.utils.Util;
 
 public abstract class JsonCallback<T> {
 	public Type returnType;
@@ -42,7 +42,7 @@ public abstract class JsonCallback<T> {
 				JSONObject weibo = (JSONObject) jsonParser.nextValue();
 				JSONArray items = weibo.getJSONArray("statuses");
 				data = items.toString();
-				if (save && TextUtil.isValidate(path)) {
+				if (save && Util.isValidate(path)) {
 					IOUtil.writeToFile(data, path);
 				}
 				return JsonParser.deserializeByJson(data, returnType);

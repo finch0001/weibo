@@ -8,14 +8,14 @@ public class JsonParser {
 	public static Gson gson = new Gson();
 
 	public static <T> T deserializeByJson(String data, Type type) {
-		if (TextUtil.isValidate(data)) {
+		if (Util.isValidate(data)) {
 			return gson.fromJson(data, type);
 		}
 		return null;
 	}
 
 	public static <T> T deserializeByJson(String data, Class<T> clz) {
-		if (TextUtil.isValidate(data)) {
+		if (Util.isValidate(data)) {
 			return gson.fromJson(data, clz);
 		}
 		return null;

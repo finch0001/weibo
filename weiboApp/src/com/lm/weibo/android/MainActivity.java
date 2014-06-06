@@ -5,11 +5,12 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.lm.weibo.android.utils.Util;
 import com.lm.weibo.android.views.FragmentHome;
 
 public class MainActivity extends Activity
@@ -24,6 +25,7 @@ public class MainActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getPixels();
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -115,4 +117,10 @@ public class MainActivity extends Activity
 		return super.onOptionsItemSelected(item);
 	}
 
+	private void getPixels() {
+		DisplayMetrics mDisplayMetrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
+		Util.widthPixels = mDisplayMetrics.widthPixels;
+		Util.heightPixels = mDisplayMetrics.heightPixels;
+	}
 }

@@ -3,20 +3,25 @@ package com.lm.weibo.android.adapter;
 import java.util.ArrayList;
 
 import net.tsz.afinal.FinalBitmap;
+import android.app.Dialog;
 import android.app.Service;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lm.weibo.android.R;
 import com.lm.weibo.android.bean.FragmentHomeBean;
-import com.lm.weibo.android.utils.TextUtil;
+import com.lm.weibo.android.utils.Util;
 
 public class FragmentHomeAdapter extends BaseAdapter {
+	private static final String TAG = "FragmentHomeAdapter";
 	private Context context;
 	private ArrayList<FragmentHomeBean> list;
 	
@@ -49,7 +54,7 @@ public class FragmentHomeAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		if (convertView == null) {
 			LayoutInflater inflater = (LayoutInflater) context
 					.getSystemService(Service.LAYOUT_INFLATER_SERVICE);
@@ -69,11 +74,46 @@ public class FragmentHomeAdapter extends BaseAdapter {
 		}
 		ViewHolder holder = (ViewHolder) convertView.getTag();
 		fb.display(holder.home_avatar, list.get(position).user.profile_image_url);
-//		holder.home_avatar.setImageBitmap(list.get(position).user.profile_image_url);
 		holder.home_name.setText(list.get(position).user.screen_name);
-		holder.home_sendfrom.setText(TextUtil.toNormalTime(list.get(position).created_at));
+		holder.home_sendfrom.setText(Util.toNormalTime(list.get(position).created_at));
 		holder.home_content.setText(list.get(position).text);
-//		holder.home_img.setImageBitmap(bm);
+		
+		if (Util.isValidate(list.get(position).thumbnail_pic)) {
+			fb.display(holder.home_img, list.get(position).thumbnail_pic);
+			holder.home_img.setVisibility(View.VISIBLE);
+			holder.home_img.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					final Dialog dialog = new Dialog(context, R.style.ImgDialog);
+					ImageView img = new ImageView(context);
+					LayoutParams params = new LayoutParams(
+							LayoutParams.WRAP_CONTENT,
+							LayoutParams.WRAP_CONTENT);
+					if (Util.isValidate(list.get(position).original_pic)) {
+						Log.d(TAG, "original_pic");
+						fb.display(img, list.get(position).original_pic);
+						dialog.addContentView(img, params);
+					} else if (Util.isValidate(list.get(position).bmiddle_pic)) {
+						Log.d(TAG, "bmiddle_pic");
+						fb.display(img, list.get(position).bmiddle_pic);
+						dialog.addContentView(img, params);
+					} else {
+						Log.d(TAG, "thumbnail_pic");
+						fb.display(img, list.get(position).thumbnail_pic);
+						dialog.addContentView(img, params);
+					}
+					img.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							dialog.dismiss();
+						}
+					});
+					dialog.show();
+				}
+			});
+		} else {
+			holder.home_img.setVisibility(View.GONE);
+		}
 		return convertView;
 	}
 	

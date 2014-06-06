@@ -6,6 +6,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -40,6 +43,13 @@ public class FragmentHome extends FragmentList {
 	@Override
 	void setAdapter(PullToRefreshListView listview) {
 		listview.setAdapter(adapter);
+		listview.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				Toast.makeText(context, "TODO 跳转到新界面并详细展示微博信息", Toast.LENGTH_SHORT).show();
+			}
+		});
 	}
 
 	@Override
@@ -65,6 +75,8 @@ public class FragmentHome extends FragmentList {
 	}
 
 	/**
+	 * 获取微博信息并显示
+	 * 
 	 * @param count
 	 *            要返回的微博数
 	 * @param later
