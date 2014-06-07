@@ -90,15 +90,12 @@ public class FragmentHomeAdapter extends BaseAdapter {
 							LayoutParams.WRAP_CONTENT,
 							LayoutParams.WRAP_CONTENT);
 					if (Util.isValidate(list.get(position).original_pic)) {
-						Log.d(TAG, "original_pic");
 						fb.display(img, list.get(position).original_pic);
 						dialog.addContentView(img, params);
 					} else if (Util.isValidate(list.get(position).bmiddle_pic)) {
-						Log.d(TAG, "bmiddle_pic");
 						fb.display(img, list.get(position).bmiddle_pic);
 						dialog.addContentView(img, params);
 					} else {
-						Log.d(TAG, "thumbnail_pic");
 						fb.display(img, list.get(position).thumbnail_pic);
 						dialog.addContentView(img, params);
 					}
