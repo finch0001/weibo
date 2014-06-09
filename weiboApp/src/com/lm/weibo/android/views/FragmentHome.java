@@ -2,6 +2,11 @@ package com.lm.weibo.android.views;
 
 import java.util.ArrayList;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -50,7 +55,8 @@ public class FragmentHome extends FragmentList {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				Toast.makeText(context, "TODO 跳转到新界面并详细展示微博信息", Toast.LENGTH_SHORT).show();
+				Toast.makeText(context, "TODO 跳转到新界面并详细展示微博信息",
+						Toast.LENGTH_SHORT).show();
 			}
 		});
 	}
@@ -90,7 +96,7 @@ public class FragmentHome extends FragmentList {
 	private void loadWeiboMsg(int count, final boolean later, long id) {
 		String url = Urls.url_home_timeline + mAccessToken.getToken();
 		url += "&count=" + count;
-		
+
 		// 载入20条旧微博
 		if (id != 0 && !later) {
 			url += "&max_id=" + id;
@@ -99,8 +105,9 @@ public class FragmentHome extends FragmentList {
 		if (id != 0 && later) {
 			url += "&since_id" + id;
 		}
-		
-		Request request = new Request(url, RequestMethod.GET, RequestTool.HTTPCLIENT);
+
+		Request request = new Request(url, RequestMethod.GET,
+				RequestTool.HTTPCLIENT);
 		request.setCallback(new JsonCallback<ArrayList<FragmentHomeBean>>() {
 			@Override
 			public void onSuccess(ArrayList<FragmentHomeBean> result) {
@@ -123,6 +130,21 @@ public class FragmentHome extends FragmentList {
 			public void onFailure(AppException result) {
 				result.printStackTrace();
 			}
+
+			@Override
+			protected String onJsonPreHandle(String content) {
+				try {
+					JSONTokener jsonParser = new JSONTokener(content);
+					JSONObject weibo = (JSONObject) jsonParser.nextValue();
+					JSONArray items = weibo.getJSONArray("statuses");
+					content = items.toString();
+					return content;
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				return null;
+			}
+
 		}.setReturnType(new TypeToken<ArrayList<FragmentHomeBean>>() {
 		}.getType()));
 		request.execute();
