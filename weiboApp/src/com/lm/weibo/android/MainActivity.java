@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.widget.DrawerLayout;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import com.lm.weibo.android.utils.Util;
 import com.lm.weibo.android.views.FragmentHome;
+import com.lm.weibo.android.views.WriteWeiboActivity;
 
 public class MainActivity extends Activity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -118,6 +120,9 @@ public class MainActivity extends Activity implements
 		case R.id.action_example:
 			Toast.makeText(MainActivity.this, "Write weibo", Toast.LENGTH_SHORT)
 					.show();
+			// TODO 发送微博需要优化
+			Intent intent = new Intent(MainActivity.this, WriteWeiboActivity.class);
+			startActivity(intent);
 			return true;
 		default:
 			break;
