@@ -20,6 +20,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.lm.weibo.android.R;
 import com.lm.weibo.android.adapter.FragmentHomeAdapter;
 import com.lm.weibo.android.bean.FragmentHomeBean;
+import com.lm.weibo.android.db.DBService;
 import com.lm.weibo.android.net.AppException;
 import com.lm.weibo.android.net.Request;
 import com.lm.weibo.android.net.Request.RequestMethod;
@@ -34,6 +35,7 @@ import com.lm.weibo.android.net.callback.JsonCallback;
  */
 public class FragmentHome extends FragmentList {
 	private Context context;
+	private DBService dbService;
 	private FragmentHomeAdapter adapter;
 	private ArrayList<FragmentHomeBean> resultlist;
 
@@ -42,8 +44,9 @@ public class FragmentHome extends FragmentList {
 		super.onCreate(savedInstanceState);
 
 		context = getActivity();
+		dbService = new DBService(context);
 		resultlist = new ArrayList<FragmentHomeBean>();
-		adapter = new FragmentHomeAdapter(context, resultlist);
+		adapter = new FragmentHomeAdapter(context, resultlist, dbService);
 
 		loadWeiboMsg(Urls.DEFAULT_COUNT, true, 0);
 	}
@@ -81,6 +84,14 @@ public class FragmentHome extends FragmentList {
 				.findViewById(R.id.pull_refresh_list);
 		setListView(mPullRefreshListView);
 		return convertView;
+	}
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		if (dbService != null) {
+			dbService.close();
+		}
 	}
 
 	/**

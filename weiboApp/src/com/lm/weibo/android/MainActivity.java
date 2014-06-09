@@ -1,9 +1,16 @@
 package com.lm.weibo.android;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.widget.DrawerLayout;
 import android.util.DisplayMetrics;
 import android.view.Menu;
@@ -13,30 +20,31 @@ import android.widget.Toast;
 import com.lm.weibo.android.utils.Util;
 import com.lm.weibo.android.views.FragmentHome;
 
-public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class MainActivity extends Activity implements
+		NavigationDrawerFragment.NavigationDrawerCallbacks {
 	private int select_item_number = -1;
 
-    private NavigationDrawerFragment mNavigationDrawerFragment;
+	private NavigationDrawerFragment mNavigationDrawerFragment;
 
-    private CharSequence mTitle;
+	private CharSequence mTitle;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        getPixels();
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		getPixels();
+		copyDBToSD();
 
-        mNavigationDrawerFragment = (NavigationDrawerFragment)
-                getFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mTitle = getTitle();
+		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager()
+				.findFragmentById(R.id.navigation_drawer);
+		mTitle = getTitle();
 
-        // Set up the drawer.
-        mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
-        
-        onNavigationDrawerItemSelected(0);
-    }
+		// Set up the drawer.
+		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
+				(DrawerLayout) findViewById(R.id.drawer_layout));
+
+		onNavigationDrawerItemSelected(0);
+	}
 
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
@@ -86,30 +94,30 @@ public class MainActivity extends Activity
 		}
 	}
 
-    public void restoreActionBar() {
-        ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
-    }
+	public void restoreActionBar() {
+		ActionBar actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		actionBar.setDisplayShowTitleEnabled(true);
+		actionBar.setTitle(mTitle);
+	}
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            getMenuInflater().inflate(R.menu.main, menu);
-            restoreActionBar();
-            return true;
-        }
-        return super.onCreateOptionsMenu(menu);
-    }
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		if (!mNavigationDrawerFragment.isDrawerOpen()) {
+			getMenuInflater().inflate(R.menu.main, menu);
+			restoreActionBar();
+			return true;
+		}
+		return super.onCreateOptionsMenu(menu);
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
 		switch (id) {
 		case R.id.action_example:
-			Toast.makeText(MainActivity.this, "Write weibo", Toast.LENGTH_SHORT).show();
+			Toast.makeText(MainActivity.this, "Write weibo", Toast.LENGTH_SHORT)
+					.show();
 			return true;
 		default:
 			break;
@@ -122,5 +130,31 @@ public class MainActivity extends Activity
 		getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
 		Util.widthPixels = mDisplayMetrics.widthPixels;
 		Util.heightPixels = mDisplayMetrics.heightPixels;
+	}
+
+	// TODO 代码需要优化的地方,只在程序第一次启动的时候拷贝数据库
+	private void copyDBToSD() {
+		InputStream myInput;
+		OutputStream myOutput;
+		try {
+			myOutput = new FileOutputStream(
+					Environment.getExternalStorageDirectory() + "/"
+							+ "sina_weibo.db");
+			myInput = this.getAssets().open("sina_weibo.db");
+			byte[] buffer = new byte[1024];
+			int length = myInput.read(buffer);
+			while (length > 0) {
+				myOutput.write(buffer, 0, length);
+				length = myInput.read(buffer);
+			}
+
+			myOutput.flush();
+			myInput.close();
+			myOutput.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
