@@ -15,9 +15,12 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.lm.weibo.android.R;
 import com.lm.weibo.android.adapter.FragmentHomeAdapter;
 import com.lm.weibo.android.bean.FragmentHomeBean;
-import com.lm.weibo.android.net.JsonCallback;
+import com.lm.weibo.android.net.AppException;
 import com.lm.weibo.android.net.Request;
+import com.lm.weibo.android.net.Request.RequestMethod;
+import com.lm.weibo.android.net.Request.RequestTool;
 import com.lm.weibo.android.net.Urls;
+import com.lm.weibo.android.net.callback.JsonCallback;
 
 /**
  * 首页
@@ -97,13 +100,8 @@ public class FragmentHome extends FragmentList {
 			url += "&since_id" + id;
 		}
 		
-		Request request = new Request(url);
+		Request request = new Request(url, RequestMethod.GET, RequestTool.HTTPCLIENT);
 		request.setCallback(new JsonCallback<ArrayList<FragmentHomeBean>>() {
-			@Override
-			public void onFailure(Exception result) {
-				result.printStackTrace();
-			}
-
 			@Override
 			public void onSuccess(ArrayList<FragmentHomeBean> result) {
 				if (resultlist != null && resultlist.size() > 0) {
@@ -119,6 +117,11 @@ public class FragmentHome extends FragmentList {
 				}
 				adapter.refresh(resultlist);
 				mPullRefreshListView.onRefreshComplete();
+			}
+
+			@Override
+			public void onFailure(AppException result) {
+				result.printStackTrace();
 			}
 		}.setReturnType(new TypeToken<ArrayList<FragmentHomeBean>>() {
 		}.getType()));
