@@ -1,14 +1,21 @@
 package com.lm.weibo.android.views;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import net.tsz.afinal.FinalBitmap;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ImageSpan;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -17,6 +24,8 @@ import android.widget.TextView;
 import com.google.gson.reflect.TypeToken;
 import com.lm.weibo.android.R;
 import com.lm.weibo.android.bean.FragmentHomeBean;
+import com.lm.weibo.android.db.DBService;
+import com.lm.weibo.android.db.EmotionItem;
 import com.lm.weibo.android.net.AppException;
 import com.lm.weibo.android.net.Request;
 import com.lm.weibo.android.net.Request.RequestMethod;
@@ -31,6 +40,7 @@ public class WeiboDetailActivity extends Activity {
 	private long id;
 	private Oauth2AccessToken mAccessToken;
 	private Context context;
+	private DBService dbService;
 	private FinalBitmap fb;
 
 	private View wd_weibomessage;
@@ -52,6 +62,7 @@ public class WeiboDetailActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_weidodetail);
 		context = WeiboDetailActivity.this;
+		dbService = new DBService(context);
 		mAccessToken = AccessTokenKeeper.readAccessToken(context);
 
 		initViews();
@@ -101,7 +112,8 @@ public class WeiboDetailActivity extends Activity {
 				fb.display(wd_user_avatar, result.user.profile_image_url);
 				wd_user_name.setText(result.user.screen_name);
 				wd_user_sendfrom.setText(Util.toNormalTime(result.created_at));
-				wd_content.setText(result.text);
+				setTextAndImg(wd_content, result.text);
+//				wd_content.setText(result.text);
 
 				if (Util.isValidate(result.original_pic)) {
 					fb.display(wd_content_img, result.original_pic);
@@ -111,7 +123,8 @@ public class WeiboDetailActivity extends Activity {
 				if (result.retweeted_status != null) {
 					wd_weibomessage_retweeted_layout.setVisibility(View.VISIBLE);
 					FragmentHomeBean retweeted = result.retweeted_status;
-					wd_retweeted_content.setText(retweeted.text);
+//					wd_retweeted_content.setText(retweeted.text);
+					setTextAndImg(wd_retweeted_content, retweeted.text);
 					if (Util.isValidate(retweeted.original_pic)) {
 						fb.display(wd_retweeted_content_img,
 								retweeted.original_pic);
@@ -136,4 +149,38 @@ public class WeiboDetailActivity extends Activity {
 		}.getType()));
 		request.execute();
 	}
+	
+	private void setTextAndImg(TextView view, String source) {
+		SpannableString spanstr = new SpannableString(source);
+		Pattern p = Pattern.compile("\\[.*?\\]");
+		Matcher m = p.matcher(source);
+		AssetManager assets = context.getAssets();
+		while (m.find()) {
+			EmotionItem item = dbService.findEmotionItem(m.group());
+			if (item != null) {
+				InputStream assetFile = null;
+				try {
+					assetFile = assets.open("sina_emotions/"
+							+ item.emotionimgname);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				ImageSpan img = new ImageSpan(
+						BitmapFactory.decodeStream(assetFile));
+				spanstr.setSpan(img, m.start(), m.end(),
+						Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+			}
+		}
+
+		view.setText(spanstr);
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if (dbService != null) {
+			dbService.close();
+		}
+	}
+	
 }
