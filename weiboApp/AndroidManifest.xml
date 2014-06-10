@@ -30,6 +30,8 @@
             android:name="com.lm.weibo.android.MainActivity" />
         
         <activity android:name="com.lm.weibo.android.views.WriteWeiboActivity" />
+        
+        <activity android:name="com.lm.weibo.android.views.WeiboDetailActivity" />
     </application>
 
 </manifest>

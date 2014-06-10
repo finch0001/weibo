@@ -158,7 +158,7 @@ public class FragmentHomeAdapter extends BaseAdapter {
 		Matcher m = p.matcher(source);
 		AssetManager assets = context.getAssets();
 		while (m.find()) {
-			Log.d("ll", m.group() + " " + m.start() + " " + m.end());
+//			Log.d("ll", m.group() + " " + m.start() + " " + m.end());
 			EmotionItem item = dbService.findEmotionItem(m.group());
 			if (item != null) {
 				InputStream assetFile = null;

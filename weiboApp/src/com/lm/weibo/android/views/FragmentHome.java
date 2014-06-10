@@ -8,12 +8,13 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -58,8 +59,11 @@ public class FragmentHome extends FragmentList {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				Toast.makeText(context, "TODO 跳转到新界面并详细展示微博信息",
-						Toast.LENGTH_SHORT).show();
+				if (resultlist != null && resultlist.get(position - 1) != null) {
+					Intent intent = new Intent(context, WeiboDetailActivity.class);
+					intent.putExtra("id", resultlist.get(position - 1).id);
+					startActivity(intent);
+				}
 			}
 		});
 	}

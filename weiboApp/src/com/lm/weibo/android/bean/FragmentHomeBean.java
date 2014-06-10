@@ -73,7 +73,7 @@ public class FragmentHomeBean {
 	}
 	
 	// 被转发的原微博信息字段,当该微博为转发微博时返回
-	public Object retweeted_status;
+	public FragmentHomeBean retweeted_status;
 	
 	// 转发数
 	public int reposts_count;
