@@ -1,6 +1,5 @@
 package com.lm.weibo.android.views;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.text.format.DateUtils;
@@ -17,7 +16,6 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.State;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.extras.SoundPullEventListener;
-import com.lm.weibo.android.MainActivity;
 import com.lm.weibo.android.R;
 import com.lm.weibo.android.utils.AccessTokenKeeper;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;

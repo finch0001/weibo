@@ -4,10 +4,10 @@ import java.net.HttpURLConnection;
 
 import org.apache.http.HttpResponse;
 
+import android.os.AsyncTask;
+
 import com.lm.weibo.android.net.Request.RequestTool;
 import com.lm.weibo.android.net.interfaces.IProgressListener;
-
-import android.os.AsyncTask;
 
 public class RequestTask extends AsyncTask<Object, Integer, Object> {
 

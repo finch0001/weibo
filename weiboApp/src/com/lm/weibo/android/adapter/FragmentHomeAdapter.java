@@ -6,25 +6,19 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import uk.co.senab.photoview.PhotoView;
-
 import net.tsz.afinal.FinalBitmap;
-import android.app.Dialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.BitmapFactory;
-import android.sax.StartElementListener;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,8 +29,6 @@ import com.lm.weibo.android.db.DBService;
 import com.lm.weibo.android.db.EmotionItem;
 import com.lm.weibo.android.utils.Util;
 import com.lm.weibo.android.views.ImgViewActivity;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class FragmentHomeAdapter extends BaseAdapter {
 	private static final String TAG = "FragmentHomeAdapter";
@@ -52,11 +44,6 @@ public class FragmentHomeAdapter extends BaseAdapter {
 		this.list = list;
 		this.dbService = dbService;
 		fb = FinalBitmap.create(context);
-		
-		if (!ImageLoader.getInstance().isInited()) {
-            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context).build();
-            ImageLoader.getInstance().init(config);
-        }
 	}
 
 	public void refresh(ArrayList<FragmentHomeBean> list) {
