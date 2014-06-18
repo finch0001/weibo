@@ -6,12 +6,16 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import uk.co.senab.photoview.PhotoView;
+
 import net.tsz.afinal.FinalBitmap;
 import android.app.Dialog;
 import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.BitmapFactory;
+import android.sax.StartElementListener;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
@@ -30,6 +34,9 @@ import com.lm.weibo.android.bean.FragmentHomeBean;
 import com.lm.weibo.android.db.DBService;
 import com.lm.weibo.android.db.EmotionItem;
 import com.lm.weibo.android.utils.Util;
+import com.lm.weibo.android.views.ImgViewActivity;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class FragmentHomeAdapter extends BaseAdapter {
 	private static final String TAG = "FragmentHomeAdapter";
@@ -45,6 +52,11 @@ public class FragmentHomeAdapter extends BaseAdapter {
 		this.list = list;
 		this.dbService = dbService;
 		fb = FinalBitmap.create(context);
+		
+		if (!ImageLoader.getInstance().isInited()) {
+            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context).build();
+            ImageLoader.getInstance().init(config);
+        }
 	}
 
 	public void refresh(ArrayList<FragmentHomeBean> list) {
@@ -103,28 +115,17 @@ public class FragmentHomeAdapter extends BaseAdapter {
 			holder.home_img.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					final Dialog dialog = new Dialog(context, R.style.ImgDialog);
-					ImageView img = new ImageView(context);
-					LayoutParams params = new LayoutParams(
-							LayoutParams.WRAP_CONTENT,
-							LayoutParams.WRAP_CONTENT);
+					Intent intent = new Intent(context, ImgViewActivity.class);
+					String imgurl = "";
 					if (Util.isValidate(list.get(position).original_pic)) {
-						fb.display(img, list.get(position).original_pic);
-						dialog.addContentView(img, params);
+						imgurl = list.get(position).original_pic;
 					} else if (Util.isValidate(list.get(position).bmiddle_pic)) {
-						fb.display(img, list.get(position).bmiddle_pic);
-						dialog.addContentView(img, params);
+						imgurl = list.get(position).bmiddle_pic;
 					} else {
-						fb.display(img, list.get(position).thumbnail_pic);
-						dialog.addContentView(img, params);
+						imgurl = list.get(position).thumbnail_pic;
 					}
-					img.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							dialog.dismiss();
-						}
-					});
-					dialog.show();
+					intent.putExtra("imgurl", imgurl);
+					context.startActivity(intent);
 				}
 			});
 		} else {
