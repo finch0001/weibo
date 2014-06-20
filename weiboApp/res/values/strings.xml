@@ -11,6 +11,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">写微博</string>
     <string name="action_settings">Settings</string>
+    <string name="cancel">取消</string>
     
     <string name="login">登陆</string>
     
@@ -20,6 +21,24 @@
     <string name="loading">载入中...</string>
     <string name="pull_up_load">上拉加载更多</string>
     <string name="release_to_load">释放刷新</string>
+    
+    <string name="dont_have_account">没用可用的发微博帐号</string>
+    <string name="content_cant_be_empty">内容不能为空</string>
+    <string name="content_cant_be_empty_and_dont_have_account">内容不能为空，当前也没可用的发微博帐号</string>
+    <string name="content_words_number_too_many">字数太多了</string>
+    <string name="sending">发送中</string>
+    <string name="send_photo">发送照片</string>
+    <string name="background_sending">发送中</string>
+    <string name="wait_server_response">发送完，等结果</string>
+    <string name="send_failed">发送失败</string>
+    <string name="send_faile_click_to_open">发送失败，点击打开</string>
+    <string name="failed_reason">发送失败：%s</string>
+    <string name="retry_send">重新发送</string>
+    <string name="send_successfully">发送成功</string>
+    <string name="unknown_error_error_code">未知错误，错误代码</string>
+    <string name="timeout">网络有问题，连不上</string>
+    <string name="unknown_sina_network_error">新浪微博某些网络节点又出故障，换个网络试试</string>
+    <string name="expired_token">授权已过期</string>
     
     <!-- 功能列表 -->
     <string name="weibosdk_demo_feature_oauth">微博授权</string>

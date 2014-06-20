@@ -1,31 +1,64 @@
 package com.lm.weibo.android.net.utilities;
 
+import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+
+import android.util.Log;
 
 import com.lm.weibo.android.net.AppException;
 import com.lm.weibo.android.net.AppException.EnumException;
 import com.lm.weibo.android.net.entities.FileEntity;
 
 public class UploadUtil {
-	public static void upload(OutputStream out, String filePath)
+	public static void upload(OutputStream out, String filePath, byte[] barry, int totalSent)
 			throws AppException {
-		String BOUNDARY = "7d4a6d158c9";
-		DataOutputStream outStream = new DataOutputStream(out);
+		BufferedOutputStream outStream = null;
+		int bytesRead;
+        int bytesAvailable;
+        int bufferSize;
+        byte[] buffer;
+        FileInputStream fis = null;
+        int maxBufferSize = 1 * 1024;
 		try {
-			outStream.writeBytes("--" + BOUNDARY + "\r\n");
-			outStream
-					.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\"; filename=\""
-							+ filePath.substring(filePath.lastIndexOf("/") + 1)
-							+ "\"" + "\r\n");
-			outStream.writeBytes("\r\n");
-			byte[] buffer = new byte[1024];
-			FileInputStream fis = new FileInputStream(filePath);
+			outStream = new BufferedOutputStream(out);
+			fis = new FileInputStream(new File(filePath));
+			bytesAvailable = fis.available();
+			bufferSize = Math.min(bytesAvailable, maxBufferSize);
+			buffer = new byte[bufferSize];
+			bytesRead = fis.read(buffer, 0, bufferSize);
+            long transferred = 0;
+            final Thread thread = Thread.currentThread();
+            while (bytesRead > 0) {
+                if (thread.isInterrupted()) {
+                    (new File(filePath)).delete();
+                    throw new InterruptedIOException();
+                }
+                outStream.write(buffer, 0, bufferSize);
+                bytesAvailable = fis.available();
+                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                bytesRead = fis.read(buffer, 0, bufferSize);
+                transferred += bytesRead;
+                if (transferred % 50 == 0)
+                	outStream.flush();
+            }
+            outStream.write(buffer);
+            outStream.write(barry);
+            totalSent += barry.length;
+            outStream.write(barry);
+            totalSent += barry.length;
+            out.flush();
+            
+			/*
 			while (fis.read(buffer, 0, 1024) != -1) {
 				outStream.write(buffer, 0, buffer.length);
 			}
@@ -34,15 +67,22 @@ public class UploadUtil {
 			byte[] end_data = ("--" + BOUNDARY + "--\r\n").getBytes();
 			outStream.write(end_data);
 			outStream.flush();
+			*/
 		} catch (FileNotFoundException e) {
 			throw new AppException(EnumException.FileException, e.getMessage());
 		} catch (IOException e) {
 			throw new AppException(EnumException.IOException, e.getMessage());
+		} finally {
+			try {
+				fis.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	public static void upload(OutputStream out, String postContent, ArrayList<FileEntity> entities) throws AppException {
-		String BOUNDARY = "7d4a6d158c9";
+		String BOUNDARY = getBoundry();
 		String PREFIX = "--", LINEND = "\r\n";
 		String CHARSET = "UTF-8";
 		DataOutputStream outStream = new DataOutputStream(out);
@@ -87,4 +127,40 @@ public class UploadUtil {
 			throw new AppException(EnumException.IOException, e.getMessage());
 		}
 	}
+	
+	public static String getBoundry() {
+        StringBuffer _sb = new StringBuffer();
+        for (int t = 1; t < 12; t++) {
+            long time = System.currentTimeMillis() + t;
+            if (time % 3 == 0) {
+                _sb.append((char) time % 9);
+            } else if (time % 3 == 1) {
+                _sb.append((char) (65 + time % 26));
+            } else {
+                _sb.append((char) (97 + time % 26));
+            }
+        }
+        return _sb.toString();
+    }
+	
+	public static String getBoundaryMessage(String boundary, Map params, String fileField, String fileName, String fileType) {
+        StringBuffer res = new StringBuffer("--").append(boundary).append("\r\n");
+
+        Iterator keys = params.keySet().iterator();
+
+        while (keys.hasNext()) {
+            String key = (String) keys.next();
+            String value = (String) params.get(key);
+            res.append("Content-Disposition: form-data; name=\"")
+                    .append(key).append("\"\r\n").append("\r\n")
+                    .append(value).append("\r\n").append("--")
+                    .append(boundary).append("\r\n");
+        }
+        res.append("Content-Disposition: form-data; name=\"").append(fileField)
+                .append("\"; filename=\"").append(fileName)
+                .append("\"\r\n").append("Content-Type: ")
+                .append(fileType).append("\r\n\r\n");
+
+        return res.toString();
+    }
 }

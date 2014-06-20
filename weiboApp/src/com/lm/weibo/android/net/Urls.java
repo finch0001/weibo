@@ -11,4 +11,7 @@ public class Urls {
 	// 根据ID获取单条微博信息
 	public static final String url_show = "https://api.weibo.com/2/statuses/show.json"
 			+ "?access_token=";
+	
+	public static final String url_update = "https://api.weibo.com/2/statuses/update.json";
+    public static final String url_upload = "https://api.weibo.com/2/statuses/upload.json";
 }

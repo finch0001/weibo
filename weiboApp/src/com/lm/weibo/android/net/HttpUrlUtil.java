@@ -63,13 +63,15 @@ public class HttpUrlUtil {
 			connection.setDoOutput(true);
 			connection.setConnectTimeout(TIMEOUT_CONNECTION);
 			connection.setReadTimeout(TIMEOUT_READ);
+			connection.setInstanceFollowRedirects(false);
 			addHeader(connection, request);
+			connection.connect();
 			out = connection.getOutputStream();
 			if (TextUtil.isValidate(request.urlParameters)) {
-				out.write(getParams(request.urlParameters).getBytes());
+				out.write(getParams(request.urlParameters).getBytes("UTF-8"));
 			}
 			if (TextUtil.isValidate(request.postContent)) {
-				out.write(request.postContent.getBytes());
+				out.write(request.postContent.getBytes("UTF-8"));
 			}
 			if (request.callback != null) {
 				isClosed = request.callback.onPrepareParams(out);
@@ -99,8 +101,13 @@ public class HttpUrlUtil {
 	private static void addHeader(HttpURLConnection connection, Request request) {
 		if (request.headers != null && request.headers.size() > 0) {
 			for (Map.Entry<String, String> header : request.headers.entrySet()) {
-				connection.addRequestProperty(header.getKey(),
-						header.getValue());
+				if (header.getKey().equalsIgnoreCase("contentLength")) {
+					connection.setFixedLengthStreamingMode(Integer
+							.parseInt(header.getValue()));
+				} else {
+					connection.addRequestProperty(header.getKey(),
+							header.getValue());
+				}
 			}
 		}
 	}

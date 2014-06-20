@@ -126,7 +126,7 @@ public abstract class AbstractCallback<T> implements ICallback<T> {
 				} else {
 					in = response.getInputStream();
 				}
-				if (!TextUtil.isValidate(path)) {
+				if (TextUtil.isValidate(path)) {
 					FileOutputStream fos = new FileOutputStream(path);
 					byte[] b = new byte[IO_BUFFER_SIZE];
 					int curPos = 0;

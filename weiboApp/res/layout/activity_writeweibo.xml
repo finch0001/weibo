@@ -3,18 +3,46 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <Button
-        android:id="@+id/writeweibo_send"
+    <RelativeLayout
+        android:id="@+id/writeweibo_control"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="发送微博" />
+        android:layout_alignParentBottom="true" >
+
+        <Button
+            android:id="@+id/writeweibo_addimg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="添加图片" />
+
+        <Button
+            android:id="@+id/writeweibo_addemotion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/writeweibo_addimg"
+            android:text="添加表情" />
+
+        <Button
+            android:id="@+id/writeweibo_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="发送微博" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/writeweibo_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/writeweibo_control"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone" />
 
     <EditText
         android:id="@+id/writeweibo_edt"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/writeweibo_send"
+        android:layout_above="@id/writeweibo_img"
         android:gravity="top|left" />
 
 </RelativeLayout>

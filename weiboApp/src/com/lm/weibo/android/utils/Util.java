@@ -1,9 +1,13 @@
 package com.lm.weibo.android.utils;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import android.os.Build;
 
 public class Util {
 	// 屏幕宽度分辨率
@@ -41,4 +45,32 @@ public class Util {
 		}
 		return date;
 	}
+	
+    public static int length(String paramString) {
+        int i = 0;
+        for (int j = 0; j < paramString.length(); j++) {
+            if (paramString.substring(j, j + 1).matches("[Α-￥]")) {
+                i += 2;
+            } else {
+                i++;
+            }
+        }
+
+        if (i % 2 > 0) {
+            i = 1 + i / 2;
+        } else {
+            i = i / 2;
+        }
+
+        return i;
+    }
+    
+    public static void closeSilently(Closeable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (IOException ignored) {
+            }
+        }
+    }
 }
