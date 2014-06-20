@@ -77,7 +77,7 @@ public class WriteWeiboActivity extends Activity {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case SEND_SUCCESS:
-				showToast("微博发送成功");
+				showToast(getString(R.string.send_successfully));
 				dialog.dismiss();
 				WriteWeiboActivity.this.finish();
 				break;
@@ -169,71 +169,6 @@ public class WriteWeiboActivity extends Activity {
 		task.execute();
 	}
 	
-	/*
-	private String sendStr = "";
-	private int totalSent = 0;
-	byte[] barry = null;
-	private void sendWeiboMsgWithPic(final String picpath) {
-		Request request = new Request(Urls.url_upload, RequestMethod.POST,
-				RequestTool.HTTPURLCONNECTION);
-		String BOUNDARYSTR = UploadUtil.getBoundry();
-		Map<String, String> headers = new HashMap<String, String>();
-		headers.put("Connection", "Keep-Alive");
-		headers.put("Charset", "UTF-8");
-		headers.put("Content-type", "multipart/form-data;boundary=" + BOUNDARYSTR);
-		
-        int contentLength = 0;
-		try {
-			barry = ("--" + BOUNDARYSTR + "--\r\n").getBytes("UTF-8");
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
-		}
-		File targetFile = new File(picpath);
-		Map<String, String> map = new HashMap<String, String>();
-        map.put("access_token", mAccessToken.getToken());
-        map.put("status", edt_content.getText().toString());
-		sendStr = UploadUtil.getBoundaryMessage(BOUNDARYSTR, map, "pic", new File(picpath).getName(), "image/png");
-		try {
-			contentLength = sendStr.getBytes("UTF-8").length + (int) targetFile.length() + 2 * barry.length;
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		String lenstr = Integer.toString(contentLength);
-		headers.put("Content-Length", lenstr);
-		headers.put("contentLength", String.valueOf(contentLength));
-		request.headers = headers;
-		request.postContent = sendStr;
-		request.setCallback(new JsonCallback<String>() {
-
-			@Override
-			public boolean onPrepareParams(OutputStream out)
-					throws AppException {
-				try {
-					totalSent += sendStr.getBytes("UTF-8").length;
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-				}
-				UploadUtil.upload(out, picpath, barry, totalSent);
-				return super.onPrepareParams(out);
-			}
-
-			@Override
-			public void onFailure(AppException result) {
-				showToast(getString(R.string.send_failed));
-				dialog.dismiss();
-			}
-
-			@Override
-			public void onSuccess(String result) {
-				showToast(getString(R.string.send_successfully));
-				dialog.dismiss();
-				WriteWeiboActivity.this.finish();
-			}
-		});
-		request.execute();
-	}
-	*/
-
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -324,41 +259,6 @@ public class WriteWeiboActivity extends Activity {
 		builder.create().show();
 	}
 
-	
-	/**
-	 * 已废弃不用
-	 * @param requesturl
-	 * @param token
-	 * @param status
-	 *
-	private void sendWeiBoByPost(String requesturl, String token, String status) {
-		HttpPost httprequest = new HttpPost(requesturl);
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("access_token", token));
-		params.add(new BasicNameValuePair("status", status));
-		try {
-			HttpEntity httpentity = new UrlEncodedFormEntity(params, "UTF-8");
-			httprequest.setEntity(httpentity);
-			HttpClient httpclient = new DefaultHttpClient();
-			HttpResponse httpresponse = httpclient.execute(httprequest);
-			if (httpresponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-				String strresult = EntityUtils.toString(httpresponse
-						.getEntity());
-				handler.sendEmptyMessage(SEND_SUCCESS);
-				Log.d("lm", "success");
-			} else {
-				handler.sendEmptyMessage(SEND_FAILED);
-				Log.d("lm", "fail");
-			}
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}*/
-	
 	private void showToast(String msg) {
 		Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
 	}

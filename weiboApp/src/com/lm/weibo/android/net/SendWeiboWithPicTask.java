@@ -58,7 +58,7 @@ public class SendWeiboWithPicTask extends AsyncTask<Void, Long, Void> {
 	}
 	
 	private boolean sendPic(String uploadPicPath) throws WeiboException {
-		return new SendWeiboWithPic(context).setPic(uploadPicPath).sendNewMsgWithPic(context, uploadPicPath);
+		return new SendWeiboWithPic(context).setPic(uploadPicPath).sendNewMsgWithPic(context, content);
 	}
 
 }
